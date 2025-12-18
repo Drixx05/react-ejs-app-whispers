@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.set("view engine", "ejs");
 app.set("views", "public/views");
 
-app.get("/", async (req, res) => {
+app.get("/about", async (req, res) => {
     const whispers = await getAll();
     res.render("about", { whispers });
 });
