@@ -1,18 +1,31 @@
-import express from "express";
-import bodyParser from "body-parser";
-import { getAll, getById, create, updateById, deleteById } from "../store";
-const app = express();
+// Client-side JavaScript for Whispering app
 
-app.use(bodyParser.json());
-app.set("view engine", "ejs");
-
-app.get("/api/v1/whisper", async (req, res) => {
-	const whispers = await getAll();
-	res.json(whispers);
+document.addEventListener("DOMContentLoaded", () => {
+	loadWhispers();
 });
 
-app.set("view engine", "ejs");
-app.get("/about", async (req, res) => {
-	const whispers = await getAll();
-	res.render("about", { whispers });
-});
+async function loadWhispers() {
+	try {
+		const response = await fetch("/api/v1/whisper");
+		const whispers = await response.json();
+		displayWhispers(whispers);
+	} catch (error) {
+		console.error("Error loading whispers:", error);
+	}
+}
+
+function displayWhispers(whispers) {
+	const container = document.getElementById("whispers-container");
+	if (!container) return;
+
+	container.innerHTML = whispers
+		.map(
+			(whisper) => `
+        <div class="whisper">
+            <p>${whisper.message}</p>
+            <small>ID: ${whisper.id}</small>
+        </div>
+    `
+		)
+		.join("");
+}
